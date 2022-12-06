@@ -22,7 +22,7 @@ module {
         private let Y1970 : Year      = 1970;
         private let D1970             = 719_527; // Y1970 * DAYS_IN_YEAR + passedLeapYears(Y1970)
         private let DAYS_IN_YEAR      = 365;
-        private let DAYS_IN_LEAP_YEAR = 365;
+        private let DAYS_IN_LEAP_YEAR = 366;
 
         public func fromTime(time : Time) : Year {
             var year  = Y1970 + time / YEAR;
@@ -50,7 +50,7 @@ module {
 
         public func timeSince1970(year : Year) : Time {
             if (year == Y1970) return 0;
-            toTime(year) - D1970 * DAY - HOUR;
+            toTime(year) - D1970 * DAY;
         };
 
         public func isLeapYear(year : Year) : Bool {
