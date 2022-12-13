@@ -1,4 +1,5 @@
 import { time = _now; nat64ToNat } = "mo:⛔";
+import Nat "mo:base/Nat";
 
 module {
     private let NANO_SEC  : Time =                      1;
@@ -134,6 +135,31 @@ module {
             t + (day - 1) * DAY + hour * HOUR + minute * MINUTE + second * SECOND + nano;
         };
 
+        private func toTextPadded(n : Nat) : Text {
+            if (n >= 10) {Nat.toText(n)} else { "0" # Nat.toText(n)}
+        };
+
+        public func isoFormat({
+            year; month; day; hour; minute; second; nano
+        } : Date) : Text {
+            (
+                toTextPadded(year) 
+                # "-" # toTextPadded(month)
+                # "-" # toTextPadded(day)
+                # "T"
+                # toTextPadded(hour)
+                # ":" # toTextPadded(minute)
+                # ":" # toTextPadded(second)
+                # "Z"
+            )
+        };
+
         public func now() : Date = fromTime(Time.now());
     };
 };
+
+
+
+
+
+

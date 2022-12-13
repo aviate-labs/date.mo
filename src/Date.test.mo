@@ -44,6 +44,14 @@ suite.run([
                 hour = 23; minute = 59; second = 59;
                 nano = 0;
             }
+        }),
+        it("Outputs Correct ISO format", func() : Bool {
+            let date_utc = {
+                year = 2016; month = 2; day = 29;
+                hour = 23; minute = 59; second = 59;
+                nano = 0;
+            };
+            Date.Date.isoFormat(date_utc) == "2016-02-29T23:59:59Z";
         })
     ])
 ]);
