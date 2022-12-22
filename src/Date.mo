@@ -148,14 +148,12 @@ module {
             year; month; day; hour; minute; second; nano
         } : Date) : Text {
             (
-                toTextPadded(year) 
-                # "-" # toTextPadded(month)
-                # "-" # toTextPadded(day)
-                # "T"
-                # toTextPadded(hour)
-                # ":" # toTextPadded(minute)
-                # ":" # toTextPadded(second)
-                # "Z"
+                toTextPadded(year) # "-" # 
+                toTextPadded(month) # "-" # 
+                toTextPadded(day) # "T" # 
+                toTextPadded(hour) # ":" # 
+                toTextPadded(minute) # ":" #
+                toTextPadded(second) # "Z"
             )
         };
 
@@ -166,6 +164,7 @@ module {
                 if (c == ':' or c == '-'or c == 'T' or c == 'Z') {true} 
                 else {false}
             }));
+
 
             let xs = switch (
                 Array.mapResult<Text, Nat, Text>(
