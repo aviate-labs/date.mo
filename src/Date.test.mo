@@ -52,6 +52,19 @@ suite.run([
                 nano = 0;
             };
             Date.Date.isoFormat(date_utc) == "2016-02-29T23:59:59Z";
+        }),
+        it("Converts an ISO text string into a Date object", func() : Bool {
+            let date_iso = "2016-02-29T23:59:59Z";
+            let date_utc = Date.Date.fromIsoFormat(date_iso);
+            date_utc == #ok({
+                year = 2016; month = 2; day = 29;
+                hour = 23; minute = 59; second = 59;
+                nano = 0;
+            })
+        }),
+        it("Returns an #err when given a non-iso date", func() : Bool {
+            let bad_date_iso = "201a6-02-29T23.3:59::59N";
+            #err("ISO-8601 string improperly formatted") == Date.Date.fromIsoFormat(bad_date_iso)
         })
     ])
 ]);

@@ -1,5 +1,10 @@
 import { time = _now; nat64ToNat } = "mo:⛔";
 import Nat "mo:base/Nat";
+import Text "mo:base/Text";
+import Array "mo:base/Array";
+import Iter "mo:base/Iter";
+import FmtNat "mo:fmt/Nat";
+import Result "mo:base/Result";
 
 module {
     private let NANO_SEC  : Time =                      1;
@@ -152,6 +157,31 @@ module {
                 # ":" # toTextPadded(second)
                 # "Z"
             )
+        };
+
+        public func fromIsoFormat(date : Text) : Result.Result<Date, Text> {
+            // Example: "2016-02-29T23:59:59Z"
+
+            let tokens = Text.tokens(date, #predicate(func (c : Char) : Bool {
+                if (c == ':' or c == '-'or c == 'T' or c == 'Z') {true} 
+                else {false}
+            }));
+
+            let xs = switch (
+                Array.mapResult<Text, Nat, Text>(
+                    Iter.toArray(tokens),
+                    func s {FmtNat.Parse(s, 10)}
+                )
+            ) {
+                case (#ok(xs)) {xs};
+                case (#err(_)) {return #err("ISO-8601 string improperly formatted")}
+            };
+
+            #ok({
+                year=xs[0]; month=xs[1]; day=xs[2];
+                hour=xs[3]; minute=xs[4]; second=xs[5];
+                nano=0;
+            });
         };
 
         public func now() : Date = fromTime(Time.now());
