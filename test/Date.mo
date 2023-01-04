@@ -2,7 +2,7 @@ import Prim "mo:⛔";
 import Nat "mo:base/Nat";
 import D "mo:base/Debug";
 
-import Date "Date";
+import Date "../src/Date";
 import { describe; it; Suite } = "mo:testing/Suite";
 
 
