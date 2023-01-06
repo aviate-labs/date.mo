@@ -147,7 +147,7 @@ module {
             padText("0" # s, desiredLength);
         };
 
-        public func isoFormat({
+        public func toIsoFormat({
             year; month; day; hour; minute; second; nano
         } : Date) : Text {
             // Always outputs to millisecond precision

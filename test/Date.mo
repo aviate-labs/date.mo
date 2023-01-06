@@ -51,7 +51,7 @@ suite.run([
                 hour = 23; minute = 59; second = 59;
                 nano = 0;
             };
-            Date.Date.isoFormat(date_utc) == "2016-02-29T23:59:59.000Z";
+            Date.Date.toIsoFormat(date_utc) == "2016-02-29T23:59:59.000Z";
         }),
         it("Outputs Correct ISO format (millisecond precision)", func() : Bool {
             let date_utc = {
@@ -59,7 +59,7 @@ suite.run([
                 hour = 23; minute = 59; second = 59;
                 nano = 456777777; // rounds up
             };
-            Date.Date.isoFormat(date_utc) == "2016-02-29T23:59:59.457Z";
+            Date.Date.toIsoFormat(date_utc) == "2016-02-29T23:59:59.457Z";
         }),
         it("Converts an ISO text string into a Date object", func() : Bool {
             let date_iso = "2016-02-29T23:59:59Z";
