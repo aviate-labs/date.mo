@@ -51,7 +51,15 @@ suite.run([
                 hour = 23; minute = 59; second = 59;
                 nano = 0;
             };
-            Date.Date.isoFormat(date_utc) == "2016-02-29T23:59:59Z";
+            Date.Date.isoFormat(date_utc) == "2016-02-29T23:59:59.000Z";
+        }),
+        it("Outputs Correct ISO format (millisecond precision)", func() : Bool {
+            let date_utc = {
+                year = 2016; month = 2; day = 29;
+                hour = 23; minute = 59; second = 59;
+                nano = 456777777; // rounds up
+            };
+            Date.Date.isoFormat(date_utc) == "2016-02-29T23:59:59.457Z";
         }),
         it("Converts an ISO text string into a Date object", func() : Bool {
             let date_iso = "2016-02-29T23:59:59Z";
@@ -62,8 +70,21 @@ suite.run([
                 nano = 0;
             })
         }),
-        it("Returns an #err when given a non-iso date", func() : Bool {
+        it("Converts an ISO text string into a Date object (millisecond precision)", func() : Bool {
+            let date_iso = "2016-02-29T23:59:59.456Z";
+            let date_utc = Date.Date.fromIsoFormat(date_iso);
+            date_utc == #ok({
+                year = 2016; month = 2; day = 29;
+                hour = 23; minute = 59; second = 59;
+                nano = 456000000;
+            })
+        }),
+        it("Returns an #err when given a non-iso date (1)", func() : Bool {
             let bad_date_iso = "201a6-02-29T23.3:59::59N";
+            #err("ISO-8601 string improperly formatted") == Date.Date.fromIsoFormat(bad_date_iso)
+        }),
+        it("Returns an #err when given a non-iso date (2)", func() : Bool {
+            let bad_date_iso = "asfaee323 -23T39223p3uhaasd23..";
             #err("ISO-8601 string improperly formatted") == Date.Date.fromIsoFormat(bad_date_iso)
         })
     ])

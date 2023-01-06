@@ -5,6 +5,8 @@ import Array "mo:base/Array";
 import Iter "mo:base/Iter";
 import FmtNat "mo:fmt/Nat";
 import Result "mo:base/Result";
+import Float "mo:base/Float";
+import Int "mo:base/Int";
 
 module {
     private let NANO_SEC  : Time =                      1;
@@ -140,31 +142,40 @@ module {
             t + (day - 1) * DAY + hour * HOUR + minute * MINUTE + second * SECOND + nano;
         };
 
-        private func toTextPadded(n : Nat) : Text {
-            if (n >= 10) {Nat.toText(n)} else { "0" # Nat.toText(n)}
+        private func padText(s : Text, desiredLength : Nat) : Text {
+            if (desiredLength <= s.size()) {return s};
+            padText("0" # s, desiredLength);
         };
 
         public func isoFormat({
             year; month; day; hour; minute; second; nano
         } : Date) : Text {
+            // Always outputs to millisecond precision
+            // Example "2016-02-29T23:59:59.000Z"
+
+            let ms = Float.toInt(
+                Float.nearest(Float.fromInt(nano) / 1_000_000)
+            );
+
             (
-                toTextPadded(year) # "-" # 
-                toTextPadded(month) # "-" # 
-                toTextPadded(day) # "T" # 
-                toTextPadded(hour) # ":" # 
-                toTextPadded(minute) # ":" #
-                toTextPadded(second) # "Z"
+                padText(Nat.toText(year),   2)  # "-" #
+                padText(Nat.toText(month),  2)  # "-" #
+                padText(Nat.toText(day),    2)  # "T" #
+                padText(Nat.toText(hour),   2)  # ":" #
+                padText(Nat.toText(minute), 2)  # ":" #
+                padText(Nat.toText(second), 2)  # "." #
+                padText(Int.toText(ms),     3)  # "Z"
             )
         };
 
         public func fromIsoFormat(date : Text) : Result.Result<Date, Text> {
             // Example: "2016-02-29T23:59:59Z"
+            //   OR     "2016-02-29T23:59:59.456Z"
 
             let tokens = Text.tokens(date, #predicate(func (c : Char) : Bool {
-                if (c == ':' or c == '-'or c == 'T' or c == 'Z') {true} 
+                if (c == ':' or c == '-' or c == 'T' or c == 'Z' or c == '.') {true}
                 else {false}
             }));
-
 
             let xs = switch (
                 Array.mapResult<Text, Nat, Text>(
@@ -176,10 +187,15 @@ module {
                 case (#err(_)) {return #err("ISO-8601 string improperly formatted")}
             };
 
+            let _nanos = switch (xs.size()) {
+                case (7) {xs[6] * 1_000_000};
+                case (_) {0}
+            };
+
             #ok({
                 year=xs[0]; month=xs[1]; day=xs[2];
                 hour=xs[3]; minute=xs[4]; second=xs[5];
-                nano=0;
+                nano=_nanos;
             });
         };
 
