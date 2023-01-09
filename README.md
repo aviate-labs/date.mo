@@ -27,9 +27,9 @@ assert( date_obj == {
 
 // Conversion to and from ISO 8601 UTC Timestamps (Text)
 
-assert( Date.Date.isoFormat(date_obj) == "2222-02-22T21:22:22Z" );
+assert( Date.Date.toIsoFormat(date_obj) == "2222-02-22T21:22:22.222Z" );
 
-assert( Date.Date.fromIsoFormat("2222-02-22T21:22:22Z") == #ok{
+assert( Date.Date.fromIsoFormat("2222-02-22T21:22:22.000Z") == #ok{
                 year = 2222; month = 2; day = 22; 
                 hour = 21; minute = 22; second = 22;
                 nano = 0;
